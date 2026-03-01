@@ -13,7 +13,7 @@ datasource db {
   provider = "postgresql"
 }
 
-model User {
+model UserWebsite {
   id    Int     @default(autoincrement()) @id
   email String  @unique
   name  String?
@@ -24,6 +24,6 @@ model Post {
   id        Int      @default(autoincrement()) @id
   content   String?
   published Boolean? @default(false)
-  author    User?    @relation(fields: [authorId], references: [id])
+  author    UserWebsite?    @relation(fields: [authorId], references: [id])
   authorId  Int?
 }

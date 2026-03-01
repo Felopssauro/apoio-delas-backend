@@ -11,4 +11,9 @@ export class AuthController {
         const {name, email, password} = body
         return this.authService.signUp(name, email, password) 
     }
+    @Post('signin')
+    signIn(@Body() body: any) {
+        const {email, password} = body
+        return this.authService.signIn(email, password) 
+    }
 }
