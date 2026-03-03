@@ -1,3 +1,4 @@
 export class SendStoryDto {
-    story!:string;
+  story: string;
+  anonymous: boolean;
 }

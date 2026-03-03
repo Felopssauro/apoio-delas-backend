@@ -5,21 +5,55 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-  
 }
 
 model UserWebsite {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
-  password String
-  posts Post[]
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  name      String?
+  password  String
+  role      String    @default("user")
+  suspended Boolean   @default(false)
+  posts     Post[]
+  comments  Comment[]
+  reports   Report[]
 }
 
 model Post {
   id        Int          @id @default(autoincrement())
+  title     String?
   content   String?
-  published Boolean?     @default(false)
+  published Boolean      @default(false)
+  anonymous Boolean      @default(false)
+  createdAt DateTime     @default(now())
   author    UserWebsite? @relation(fields: [authorId], references: [id])
   authorId  Int?
+  comments  Comment[]
+}
+
+model Comment {
+  id        Int          @id @default(autoincrement())
+  text      String
+  anonymous Boolean      @default(false)
+  createdAt DateTime     @default(now())
+  author    UserWebsite? @relation(fields: [authorId], references: [id])
+  authorId  Int?
+  post      Post         @relation(fields: [postId], references: [id])
+  postId    Int
+  parent    Comment?     @relation("CommentReplies", fields: [parentId], references: [id])
+  parentId  Int?
+  replies   Comment[]    @relation("CommentReplies")
+  reports   Report[]
+}
+
+model Report {
+  id         Int         @id @default(autoincrement())
+  reason     String
+  detail     String?
+  status     String      @default("pendente")
+  createdAt  DateTime    @default(now())
+  comment    Comment     @relation(fields: [commentId], references: [id])
+  commentId  Int
+  reporter   UserWebsite @relation(fields: [reporterId], references: [id])
+  reporterId Int
 }
